@@ -11,6 +11,7 @@ Route::middleware(['auth:sanctum', 'ability:' . TokenAbility::ACCESS_API->value]
 
 Route::middleware('guest:sanctum')->controller(AccountController::class)->group(function () {
     Route::post('/login', 'login');
+    Route::post('/register', 'register');
     Route::post('/refresh', 'refresh');
     Route::post('/isUserExists', 'isUserExists');
 });
