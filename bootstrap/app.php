@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->alias(['telegram.auth' => TelegramAuth::class]);
+        // $middleware->alias(['telegram.auth' => TelegramAuth::class]);
         $middleware->alias(['ability' => CheckForAnyAbility::class]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

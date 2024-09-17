@@ -10,16 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AccountService
 {
     public function login(array $data)
     {
-
-        $user = User::firstOrCreate(
-            ['telegram_id' => $data['id']]
-        );
-
+        $user = User::where('telegram_id', $data['telegram_id'])->first();
 
         return $this->createToken($user);
     }

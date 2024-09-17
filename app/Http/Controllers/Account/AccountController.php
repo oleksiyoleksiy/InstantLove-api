@@ -22,6 +22,10 @@ class AccountController extends Controller
     {
         $data = $request->validated();
 
+        if (!auth()->attempt($data)) {
+            return response()->json(['message' => 'authorization failed'], Response::HTTP_UNAUTHORIZED);
+        }
+
         return $this->service->login($data);
     }
     public function register(RegistrationRequest $request)

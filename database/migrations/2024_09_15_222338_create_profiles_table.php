@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('images');
             $table->string('name');
             $table->string('gender');
+            $table->string('location');
             $table->unsignedTinyInteger('age');
             $table->timestamps();
         });

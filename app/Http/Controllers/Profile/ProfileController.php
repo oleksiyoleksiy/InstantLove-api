@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\ProfileRequest;
 use App\Http\Resources\Profile\ProfileResource;
+use App\Models\Profile;
 use App\Services\Profile\ProfileService;
 use Illuminate\Http\Request;
 
@@ -22,15 +24,17 @@ class ProfileController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProfileRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        return ProfileResource::make($this->service->store($data));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Profile $profile)
     {
         //
     }
@@ -38,9 +42,11 @@ class ProfileController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ProfileRequest $request, Profile $profile)
     {
-        //
+        $data = $request->validated();
+
+        return ProfileResource::make($this->service->update($data, $profile));
     }
 
     /**

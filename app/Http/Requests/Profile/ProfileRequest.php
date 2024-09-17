@@ -4,6 +4,7 @@ namespace App\Http\Requests\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ProfileRequest extends FormRequest
 {
@@ -22,9 +23,14 @@ class ProfileRequest extends FormRequest
      */
     public function rules(): array
     {
+        if (!$this->route('profile') && auth()->user()->profile) {
+            throw ValidationException::withMessages(['message' => 'user already have a profile']);
+        }
+
+
         return [
             'images' => ['required', 'array', 'max:5'],
-            'images.*' => ['image', 'mimetypes:png,jpg,jpeg,gif', 'max:8192'],
+            'images.*' => ['image', 'mimes:png,jpg,jpeg,gif', 'max:8192'],
             'name' => ['required', 'string', 'max:20'],
             'location' => ['required', 'string', 'max:83'],
             'gender' => ['required', 'string', 'in:male,female'],
