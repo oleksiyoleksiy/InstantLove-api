@@ -22,7 +22,7 @@ class RegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'telegram_id' => ['required', 'string'],
+            'telegram_id' => ['required', 'string', 'unique:users,telegram_id'],
             'password' => ['required', 'confirmed', 'min:8']
         ];
     }

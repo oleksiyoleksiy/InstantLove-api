@@ -15,9 +15,7 @@ class ProfileService
 
     public function store(array $data)
     {
-        $imagePaths = array_map(fn($image) => $image->store(), $data['images']);
-
-        $images = implode(',', $imagePaths);
+        $images = $this->storeImages($data['images']);
 
         $profile = auth()->user()->profile()->create([
             'name' => $data['name'],
@@ -30,19 +28,16 @@ class ProfileService
         return $profile;
     }
 
-    public function update(array $data, Profile $profile)
+    public function update(array $data)
     {
-        if (isset($data['images'])) {
-            $oldImages = explode(',', $profile->images);
-            foreach ($oldImages as $oldImage) {
-                Storage::delete($oldImage);
-            }
+        $profile = auth()->user()->profile;
 
-            $imagePaths = array_map(fn($image) => $image->store(), $data['images']);
-            $images = implode(',', $imagePaths);
-        } else {
-            $images = $profile->images;
+        $oldImages = explode(',', $profile->images);
+        foreach ($oldImages as $oldImage) {
+            Storage::delete($oldImage);
         }
+
+        $images = $this->storeImages($data['images']);
 
         $profile->update([
             'name' => $data['name'],
@@ -53,5 +48,12 @@ class ProfileService
         ]);
 
         return $profile;
+    }
+
+    private function storeImages(array $images)
+    {
+        $imagePaths = array_map(fn($image) => $image->store('images'), $images);
+        $imageNames = array_map(fn($path) => explode('/', $path)[1], $imagePaths);
+        return implode(',', $imageNames);
     }
 }

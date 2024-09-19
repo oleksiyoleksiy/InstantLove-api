@@ -46,7 +46,7 @@ class ProfileController extends Controller
     {
         $data = $request->validated();
 
-        return ProfileResource::make($this->service->update($data, $profile));
+        return ProfileResource::make($this->service->update($data));
     }
 
     /**

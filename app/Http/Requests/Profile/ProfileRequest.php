@@ -23,7 +23,7 @@ class ProfileRequest extends FormRequest
      */
     public function rules(): array
     {
-        if (!$this->route('profile') && auth()->user()->profile) {
+        if ($this->route()->named('profile.store') && auth()->user()->profile) {
             throw ValidationException::withMessages(['message' => 'user already have a profile']);
         }
 
