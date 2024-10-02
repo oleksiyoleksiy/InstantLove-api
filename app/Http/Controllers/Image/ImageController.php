@@ -12,6 +12,6 @@ class ImageController extends Controller
 
     public function show(string $image)
     {
-        return $this->service->getImage($image);
+        return $this->service->show($image);
     }
 }

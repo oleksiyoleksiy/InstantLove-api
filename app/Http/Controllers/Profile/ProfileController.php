@@ -4,56 +4,36 @@ namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profile\ProfileRequest;
-use App\Http\Resources\Profile\ProfileResource;
+use App\Http\Requests\Profile\StoreRequest;
+use App\Http\Requests\Profile\UpdateRequest;
+use App\Http\Resources\ProfileResource;
 use App\Models\Profile;
 use App\Services\Profile\ProfileService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProfileController extends Controller
 {
     public function __construct(private ProfileService $service) {}
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return ProfileResource::make($this->service->index());
+        return $this->service->index()
+            ? ProfileResource::make($this->service->index())
+            : response()->json(['message' => 'user profile not found'], Response::HTTP_NOT_FOUND);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(ProfileRequest $request)
+    public function store(StoreRequest $request)
     {
         $data = $request->validated();
 
         return ProfileResource::make($this->service->store($data));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Profile $profile)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(ProfileRequest $request, Profile $profile)
+    public function update(UpdateRequest $request, Profile $profile)
     {
         $data = $request->validated();
 
-        return ProfileResource::make($this->service->update($data));
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return ProfileResource::make($this->service->update($profile, $data));
     }
 }

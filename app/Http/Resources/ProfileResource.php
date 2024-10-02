@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Profile;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -15,8 +15,9 @@ class ProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
-            'images' => $this->getImages(),
+            'images' => ImageResource::collection($this->images),
             'location' => $this->location,
             'gender' => $this->gender,
             'age' => $this->age

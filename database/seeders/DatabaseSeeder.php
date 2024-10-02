@@ -13,11 +13,52 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $user = User::create([
+            'telegram_id' => '202020',
+            'password' => 'password',
         ]);
+
+        $profileData = [
+            'name' => 'Oleksiy',
+            'age' => 20,
+            'gender' => 'male',
+            'location' => 'Munich'
+        ];
+
+        $images = [
+            [
+                'path' => 'image-1.png'
+            ],
+            [
+                'path' => 'image-2.webp'
+            ]
+        ];
+
+        $profile = $user->profile()->create($profileData);
+
+        collect($images)->each(fn ($image) => $profile->images()->create($image));
+
+        $user = User::create([
+            'telegram_id' => '202021',
+            'password' => 'password',
+        ]);
+
+
+        $profileData = [
+            'name' => 'Maria',
+            'age' => 21,
+            'gender' => 'female',
+            'location' => 'Munich'
+        ];
+
+        $images = [
+            [
+                'path' => 'test.jpg'
+            ]
+        ];
+
+        $profile = $user->profile()->create($profileData);
+
+        collect($images)->each(fn ($image) => $profile->images()->create($image));
     }
 }

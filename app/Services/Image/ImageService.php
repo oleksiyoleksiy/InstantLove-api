@@ -2,12 +2,13 @@
 
 namespace App\Services\Image;
 
+use App\Models\Image;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class ImageService
 {
-    public function getImage(string $image)
+    public function show(string $image)
     {
         $foundImage = Storage::get("images/$image");
 
@@ -17,5 +18,4 @@ class ImageService
 
         return response($foundImage, 200)->header('Content-Type', 'image');
     }
-
 }

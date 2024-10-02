@@ -3,11 +3,14 @@
 namespace App\Services\Profile;
 
 use App\Models\Profile;
+use App\Services\ProfileImage\ProfileImageService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
+    public function __construct(private ProfileImageService $imageService) {}
+
     public function index()
     {
         return auth()->user()->profile;
@@ -15,45 +18,35 @@ class ProfileService
 
     public function store(array $data)
     {
-        $images = $this->storeImages($data['images']);
-
         $profile = auth()->user()->profile()->create([
             'name' => $data['name'],
             'age' => $data['age'],
             'location' => $data['location'],
-            'images' => $images,
             'gender' => $data['gender']
         ]);
+
+
+        $this->imageService->store($profile, $data['images']);
 
         return $profile;
     }
 
-    public function update(array $data)
+    public function update(Profile $profile, array $data)
     {
-        $profile = auth()->user()->profile;
-
-        $oldImages = explode(',', $profile->images);
-        foreach ($oldImages as $oldImage) {
-            Storage::delete($oldImage);
-        }
-
-        $images = $this->storeImages($data['images']);
-
         $profile->update([
             'name' => $data['name'],
             'age' => $data['age'],
             'location' => $data['location'],
-            'images' => $images,
             'gender' => $data['gender']
         ]);
 
         return $profile;
     }
 
-    private function storeImages(array $images)
-    {
-        $imagePaths = array_map(fn($image) => $image->store('images'), $images);
-        $imageNames = array_map(fn($path) => explode('/', $path)[1], $imagePaths);
-        return implode(',', $imageNames);
-    }
+    // private function storeImages(array $images)
+    // {
+    //     $imagePaths = array_map(fn($image) => $image->store('images'), $images);
+    //     $imageNames = array_map(fn($path) => explode('/', $path)[1], $imagePaths);
+    //     return implode(',', $imageNames);
+    // }
 }
