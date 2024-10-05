@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
+
+    public function preference(): HasOne
+    {
+        return $this->hasOne(Preference::class);
+    }
 }

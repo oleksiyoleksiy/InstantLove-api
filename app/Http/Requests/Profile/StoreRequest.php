@@ -23,11 +23,6 @@ class StoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        if (auth()->user()->profile) {
-            throw ValidationException::withMessages(['message' => 'user already have a profile']);
-        }
-
-
         return [
             'images' => ['required', 'array', 'max:5'],
             'images.*' => ['image', 'mimes:png,jpg,jpeg,gif,webp', 'max:8192'],
@@ -36,5 +31,14 @@ class StoreRequest extends FormRequest
             'gender' => ['required', 'string', 'in:male,female'],
             'age' => ['required', 'integer', 'min:14', 'max:40']
         ];
+    }
+
+    protected function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if (auth()->user()->profile) {
+                $validator->errors()->add('message', 'you need to select a range or a specific value for age');
+            }
+        });
     }
 }

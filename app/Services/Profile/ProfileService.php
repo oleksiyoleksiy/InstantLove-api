@@ -40,7 +40,7 @@ class ProfileService
             'gender' => $data['gender']
         ]);
 
-        return $profile;
+        return $profile->fresh();
     }
 
     // private function storeImages(array $images)
