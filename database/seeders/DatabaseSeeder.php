@@ -13,52 +13,76 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
-            'telegram_id' => '202020',
-            'password' => 'password',
-        ]);
-
-        $profileData = [
-            'name' => 'Oleksiy',
-            'age' => 20,
-            'gender' => 'male',
-            'location' => 'Munich'
-        ];
-
-        $images = [
+        $data = [
             [
-                'path' => 'image-1.png'
+                'telegram_id' => '202020',
+                'name' => 'Oleksiy',
+                'gender' => 'male',
+                'image' => 'user.png'
             ],
             [
-                'path' => 'image-2.webp'
-            ]
+                'name' => 'Monica',
+                'gender' => 'female',
+                'image' => 'monica.png'
+            ],
+            [
+                'name' => 'Lela',
+                'gender' => 'female',
+                'image' => 'lela.png'
+            ],
+            [
+                'name' => 'Jenna',
+                'gender' => 'female',
+                'image' => 'jenna.png'
+            ],
+            [
+                'name' => 'Maria',
+                'gender' => 'female',
+                'image' => 'maria.jpg'
+            ],
         ];
 
-        $profile = $user->profile()->create($profileData);
+        collect($data)->each(function ($item) {
+            if (empty($item['telegram_id'])) {
+                $item['telegram_id'] = fake()->numberBetween(200000, 205000);
+            }
 
-        collect($images)->each(fn ($image) => $profile->images()->create($image));
+            $this->createUser($item['telegram_id'], $item['name'], $item['gender'], $item['image']);
+        });
+    }
 
+    private function createUser($telegram_id, $name, $gender, $image)
+    {
         $user = User::create([
-            'telegram_id' => '202021',
+            'telegram_id' => $telegram_id,
             'password' => 'password',
         ]);
 
-
         $profileData = [
-            'name' => 'Maria',
-            'age' => 21,
-            'gender' => 'female',
+            'name' => $name,
+            'age' => fake()->numberBetween(20, 30),
+            'gender' => $gender,
             'location' => 'Munich'
         ];
 
-        $images = [
-            [
-                'path' => 'test.jpg'
-            ]
-        ];
 
         $profile = $user->profile()->create($profileData);
 
-        collect($images)->each(fn ($image) => $profile->images()->create($image));
+        $preference = [
+            'gender' =>  $gender === 'male' ? 'female' : 'male'
+        ];
+
+        if (fake()->boolean()) {
+            $preference['age'] = fake()->numberBetween(18, 23);
+        } else {
+            $preference['min_age'] = fake()->numberBetween(18, 20);
+            $preference['max_age'] = fake()->numberBetween(21, 25);
+        }
+
+        $user->preference()->create($preference);
+
+        $profile->images()->create([
+            'path' => $image
+        ]);
     }
 }

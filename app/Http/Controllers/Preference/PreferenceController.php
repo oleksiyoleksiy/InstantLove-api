@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Preference;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Preference\PreferenceRequest;
 use App\Http\Resources\PreferenceResource;
+use App\Http\Resources\PreferenceSuggestionResource;
+use App\Http\Resources\ProfileResource;
 use App\Models\Preference;
 use App\Services\Preference\PreferenceService;
 use Illuminate\Http\Request;
@@ -29,6 +31,9 @@ class PreferenceController extends Controller
     {
         $data = $request->validated();
 
-        return PreferenceResource::make($this->service->update($preference, $data));
+        return response()->json([
+            'preferences' => PreferenceResource::make($this->service->update($preference, $data)),
+            'suggestions' => ProfileResource::collection(auth()->user()->suggestions())
+        ]);
     }
 }
